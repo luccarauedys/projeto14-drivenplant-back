@@ -46,3 +46,60 @@ export const signIn = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+export const getProducts = async (req,res) => {
+  db.collection("products")
+    .find({})
+    .toArray()
+    .then((products) => res.send(products));
+}
+
+export const openProduct = async (req,res) => {
+  const { id } = req.query;
+
+  try {
+    const products = db.collection("products");
+    const product = await products.findOne({ id });
+    if (!product) {
+      res.status(404).send("Product not found");
+      return;
+    }
+    res.status(200).send(product);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+export const addCart = async (req,res) => {
+  try{
+    const products = db.collection("products");
+    const product = await products.findOne({id});
+    const users = db.collection("users");
+    const userCart = users.updateOne(
+      {_id: session.userId }, {$set: {cart: [...cart, product]}}
+    );
+  }catch (error){
+    res.status(500).send(error);
+  }
+};
+
+export const openCart = async (req,res) => {
+  // const { authorization } = req.headers;
+
+  // const token = authorization?.replace("Bearer", "").trim();
+
+  const { name } = res.locals.user;
+
+  try{
+    // const session = db.collection("sessions");
+    // const user = await session.findOne({token});
+
+    const users = db.collection("users");
+    const client = await users.findOne({name});
+    const {cart} = client;
+    console.log("VER O CARRINHO", cart)
+    res.status(200).send(cart);
+  }catch (error){
+    res.status(500).send(error);
+  }
+}

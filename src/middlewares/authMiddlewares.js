@@ -9,13 +9,9 @@ export const validateSignUpSchema = (req, res, next) => {
   const user = req.body;
 
   const signUpSchema = Joi.object({
-    name: Joi.string().min(2).required(),
+    name: Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.min(6).required(),
-    password_confirmation: Joi.ref("password").with(
-      "password_confirmation",
-      "password"
-    ),
+    password: Joi.required(),
   });
 
   const { error } = signUpSchema.validate(user, { abortEarly: false });
@@ -33,7 +29,7 @@ export const validateSignInSchema = (req, res, next) => {
 
   const signInSchema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.min(6).required(),
+    password: Joi.required(),
   });
 
   const { error } = signInSchema.validate(user, { abortEarly: false });

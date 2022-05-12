@@ -26,16 +26,17 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
-  const { name, email, password } = res.locals.user;
+  const { email, password } = res.locals.user;
 
   try {
     const user = await db.collection("users").findOne({ email });
 
     if (user && bcrypt.compareSync(password, user.password)) {
-      const session = { name, email, userId: user._id };
+      const session = { email, userId: user._id };
       await db.collection("sessions").insertOne(session);
 
       const token = jwt.sign(session, process.env.JWT_SECRET);
+
       return res.status(200).send({ token });
     }
 
@@ -49,9 +50,9 @@ export const signIn = async (req, res) => {
 
 export const getProducts = async (req,res) => {
   db.collection("products")
-    .find({})
-    .toArray()
-    .then((products) => res.send(products));
+  .find({})
+  .toArray()
+  .then((products) => res.send(products));
 }
 
 export const openProduct = async (req,res) => {
@@ -71,11 +72,14 @@ export const openProduct = async (req,res) => {
 };
 
 export const addCart = async (req,res) => {
+  const {id} = req.body;
+
   try{
     const products = db.collection("products");
     const product = await products.findOne({id});
+
     const users = db.collection("users");
-    const userCart = users.updateOne(
+    users.updateOne(
       {_id: session.userId }, {$set: {cart: [...cart, product]}}
     );
   }catch (error){
@@ -84,20 +88,14 @@ export const addCart = async (req,res) => {
 };
 
 export const openCart = async (req,res) => {
-  // const { authorization } = req.headers;
-
-  // const token = authorization?.replace("Bearer", "").trim();
-
-  const { name } = res.locals.user;
-
   try{
-    // const session = db.collection("sessions");
-    // const user = await session.findOne({token});
+    const session = db.collection("sessions");
+    const user = await session.findOne({token}); //Não consegui testar. Sempre fala q o token é inválido, mesmo copiando do que foi enviado em "res.send()"
 
     const users = db.collection("users");
-    const client = await users.findOne({name});
+    const client = await users.findOne({email:user.email});
     const {cart} = client;
-    console.log("VER O CARRINHO", cart)
+
     res.status(200).send(cart);
   }catch (error){
     res.status(500).send(error);

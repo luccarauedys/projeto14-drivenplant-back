@@ -1,36 +1,33 @@
 import express from "express";
-import { MongoClient } from 'mongodb';
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-const app = express().use(cors()).use(express.json());
-let db = null;
-try {
-  const mongoClient = new MongoClient(process.env.MONGO_URI);
-  await mongoClient.connect();
-  db = mongoClient.db("drivenPlant");
-  console.log("Seu DB está funcionando! YAY");
-} catch (error) {
-  res.status(500).send("Não foi possível conectar ao DB");
-}    
+import authRouter from "./routes/authRouter.js";
 
-app.get('/home', (req, res) => {
-  db.collection("products").find({}).toArray().then(products => res.send(products));
+const app = express().use(cors()).use(express.json());
+
+app.use(authRouter);
+
+app.get("/home", (req, res) => {
+  db.collection("products")
+    .find({})
+    .toArray()
+    .then((products) => res.send(products));
 });
 
-app.get('/product', async (req,res) => {
-  const {id} = req.query;
+app.get("/product", async (req, res) => {
+  const { id } = req.query;
 
-  try{
+  try {
     const products = db.collection("products");
-    const product = await products.findOne({id: id});
-    if(!product){
-      res.sendStatus(404)
+    const product = await products.findOne({ id: id });
+    if (!product) {
+      res.sendStatus(404);
       return;
     }
     res.status(200).send(product);
-  } catch (error){
+  } catch (error) {
     res.sendStatus(500);
   }
 });
@@ -70,3 +67,6 @@ app.get('/cart', (req,res) => {
 app.listen(process.env.PORT, () => {
   console.log("Servidor em pé na porta", process.env.PORT);
 });
+
+const port = process.env.PORT || 5000;
+app.listen(port);

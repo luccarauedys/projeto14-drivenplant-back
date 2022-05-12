@@ -6,7 +6,7 @@ dotenv.config();
 
 const app = express().use(cors()).use(express.json());
 
-const mongoClient = new MongoClient(process.env.MONGO_URL);
+const mongoClient = new MongoClient(process.env.MONGO_URI);
 let db = null;
 const promise = mongoClient.connect();
 promise.then(() => {

@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
+import "./config/db.js";
 import authRouter from "./routes/authRouter.js";
 
 const app = express().use(cors()).use(express.json());

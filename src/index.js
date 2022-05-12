@@ -29,7 +29,8 @@ app.get('/product', async (req,res) => {
       res.sendStatus(404)
       return;
     }
-    res.sendStatus(200);
+    console.log(product, "CADE");
+    res.status(200).send(product);
   } catch (error){
     res.sendStatus(500);
   }

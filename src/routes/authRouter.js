@@ -2,11 +2,7 @@ import express from "express";
 
 import { 
   signUp, 
-  signIn, 
-  getProducts,
-  openProduct, 
-  addCart,
-  openCart
+  signIn
 } from "./../controllers/authController.js";
 
 import {
@@ -26,13 +22,5 @@ authRouter.post(
 );
 
 authRouter.post("/signin", validateSignInSchema, signIn);
-
-authRouter.get("/products", getProducts);
-
-authRouter.get("/product", openProduct);
-
-authRouter.post("/cart", validateToken, addCart);
-
-authRouter.get("/cart", validateToken, openCart)
 
 export default authRouter;

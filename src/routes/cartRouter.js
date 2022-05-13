@@ -9,7 +9,7 @@ import { validateToken } from "./../middlewares/authMiddlewares.js";
 
 const cartRouter = express.Router();
 
-cartRouter.post("/cart", validateToken, addCart);
+cartRouter.put("/cart", validateToken, addCart);
 
 cartRouter.get("/cart", validateToken, openCart);
 

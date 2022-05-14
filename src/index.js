@@ -15,9 +15,5 @@ app.use(productsRouter);
 app.use(cartRouter);
 app.use(checkoutRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log("Servidor em pé na porta", process.env.PORT);
-});
-
 const port = process.env.PORT || 5000;
 app.listen(port);

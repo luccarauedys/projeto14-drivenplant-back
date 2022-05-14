@@ -1,6 +1,8 @@
 import express from "express";
-import { validateToken } from "./../middlewares/authMiddlewares.js";
+
 import { createOrder } from "../controllers/checkoutController.js";
+
+import { validateToken } from "./../middlewares/authMiddlewares.js";
 
 const checkoutRouter = express.Router();
 

@@ -25,7 +25,6 @@ export const validateSignUpSchema = (req, res, next) => {
 };
 
 export const validateSignInSchema = (req, res, next) => {
-  console.log("ValidadeSIGNIN");
   const user = req.body;
 
   const signInSchema = Joi.object({
@@ -56,19 +55,16 @@ export const validateIfUserAlreadyExists = async (req, res, next) => {
 };
 
 export const validateToken = async (req, res, next) => {
-  console.log("ENTROOOOOOOOOOOOU");
   const { authorization } = req.headers;
-  console.log(authorization,"CADE");
 
   const token = authorization?.replace("Bearer","").trim();
-  console.log(token,"CADE");
 
   if (!token) return res.status(401).send({ message: "Token is missing" });
 
   try {
     const session = jwt.verify(token, process.env.JWT_SECRET);
 
-    const sessionExists = await db.collection("sessions").findOne(session);
+    const sessionExists = await db.collection("sessions").findOne({email: session.email});
     if (!sessionExists)
       return res.status(401).send({ message: "Invalid Token" });
 

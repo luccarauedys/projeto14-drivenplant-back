@@ -33,9 +33,10 @@ export const signIn = async (req, res) => {
 
     if (user && bcrypt.compareSync(password, user.password)) {
       const session = { email, userId: user._id };
-      await db.collection("sessions").insertOne(session);
 
       const token = jwt.sign(session, process.env.JWT_SECRET);
+
+      await db.collection("sessions").insertOne(session);
 
       return res.status(200).send({ token });
     }

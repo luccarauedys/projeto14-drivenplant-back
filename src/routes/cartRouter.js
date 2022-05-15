@@ -6,9 +6,9 @@ import { validateToken } from "./../middlewares/authMiddlewares.js";
 
 const cartRouter = express.Router();
 
-// cartRouter.use(validateToken);
+cartRouter.use(validateToken);
 
 cartRouter.put("/cart", addCart);
-cartRouter.get("/cart", validateToken, openCart);
+cartRouter.get("/cart", openCart);
 
 export default cartRouter;

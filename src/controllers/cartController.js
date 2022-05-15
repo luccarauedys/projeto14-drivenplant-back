@@ -30,7 +30,8 @@ export const openCart = async (req, res) => {
 
   try {
     const users = db.collection("users");
-    const client = await users.findOne({ email: user });
+    const session = jwt.verify(token, process.env.JWT_SECRET);
+    const client = await users.findOne({ email: session.email });
     const { cart } = client;
 
     res.status(200).send(cart);

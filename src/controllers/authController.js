@@ -1,13 +1,16 @@
+import db from "./../config/db.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import dotenv from "dotenv";
 dotenv.config();
 
-import db from "./../config/db.js";
-
 export const signUp = async (req, res) => {
-  const { name, email, password } = res.locals.user;
+  const { name, email, password } = res.locals.signup;
   try {
+    const userAlreadyExists = await db.collection("users").findOne({ email });
+    if (userAlreadyExists)
+      return res.status(409).send({ message: "User already exists" });
+
     const passwordHash = bcrypt.hashSync(password, 10);
     await db.collection("users").insertOne({
       name,
@@ -22,7 +25,7 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
-  const { email, password } = res.locals.login;
+  const { email, password } = res.locals.signin;
   try {
     const user = await db.collection("users").findOne({ email });
     if (user && bcrypt.compareSync(password, user.password)) {

@@ -25,6 +25,7 @@ export const validateSignUpSchema = (req, res, next) => {
 };
 
 export const validateSignInSchema = (req, res, next) => {
+  console.log("ValidadeSIGNIN");
   const user = req.body;
 
   const signInSchema = Joi.object({
@@ -55,9 +56,12 @@ export const validateIfUserAlreadyExists = async (req, res, next) => {
 };
 
 export const validateToken = async (req, res, next) => {
+  console.log("ENTROOOOOOOOOOOOU");
   const { authorization } = req.headers;
+  console.log(authorization,"CADE");
 
-  const token = authorization?.replace("Bearer", "").trim();
+  const token = authorization?.replace("Bearer","").trim();
+  console.log(token,"CADE");
 
   if (!token) return res.status(401).send({ message: "Token is missing" });
 

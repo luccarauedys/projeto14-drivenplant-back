@@ -38,7 +38,7 @@ export const validateSignInSchema = (req, res, next) => {
     return res.status(400).send(error.details.map((err) => err.message));
   }
 
-  res.locals.user = user;
+  res.locals.loginInfos = user;
   next();
 };
 
@@ -56,9 +56,7 @@ export const validateIfUserAlreadyExists = async (req, res, next) => {
 
 export const validateToken = async (req, res, next) => {
   const { authorization } = req.headers;
-
   const token = authorization?.replace("Bearer", "").trim();
-
   if (!token) return res.status(401).send({ message: "Token is missing" });
 
   try {
@@ -68,6 +66,7 @@ export const validateToken = async (req, res, next) => {
     if (!sessionExists)
       return res.status(401).send({ message: "Invalid Token" });
 
+    res.locals.session = session;
     next();
   } catch {
     res.status(401).send({ message: "Invalid Token" });

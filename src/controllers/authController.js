@@ -26,7 +26,7 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
-  const { email, password } = res.locals.user;
+  const { email, password } = res.locals.loginInfos;
 
   try {
     const user = await db.collection("users").findOne({ email });
@@ -34,9 +34,7 @@ export const signIn = async (req, res) => {
     if (user && bcrypt.compareSync(password, user.password)) {
       const session = { email, userId: user._id };
       await db.collection("sessions").insertOne(session);
-
       const token = jwt.sign(session, process.env.JWT_SECRET);
-
       return res.status(200).send({ token });
     }
 

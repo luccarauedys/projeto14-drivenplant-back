@@ -60,13 +60,14 @@ export const validateToken = async (req, res, next) => {
   if (!token) return res.status(401).send({ message: "Token is missing" });
 
   try {
-    const session = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = jwt.verify(token, process.env.JWT_SECRET) || null;
+    if (!email) return res.status(401).send({ message: "Invalid Token" });
 
-    const sessionExists = await db.collection("sessions").findOne(session);
+    const sessionExists = await db.collection("sessions").findOne({ email });
     if (!sessionExists)
       return res.status(401).send({ message: "Invalid Token" });
 
-    res.locals.session = session;
+    res.locals.user_email = email;
     next();
   } catch {
     res.status(401).send({ message: "Invalid Token" });

@@ -5,7 +5,6 @@ dotenv.config();
 export const addCart = async (req, res) => {
   const product = req.body;
   const { email } = res.locals.session;
-
   try {
     await db
       .collection("users")

@@ -8,7 +8,7 @@ export const getProducts = async (req, res) => {
     const allProducts = await db.collection("products").find().toArray();
     if (!category) return res.status(200).send(allProducts);
 
-    const productsOfCategory = products.filter(
+    const productsOfCategory = allProducts.filter(
       (product) => product.category === category
     );
     res.status(200).send(productsOfCategory);

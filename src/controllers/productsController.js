@@ -8,7 +8,6 @@ export const getProducts = async (req, res) => {
   try {
     const allProducts = await db.collection("products").find().toArray();
     if (!category) return res.status(200).send(allProducts);
-
     const productsOfCategory = products.filter(
       (product) => product.category === category
     );
@@ -20,7 +19,6 @@ export const getProducts = async (req, res) => {
 
 export const openProduct = async (req, res) => {
   const { id } = req.query;
-
   try {
     const products = db.collection("products");
     const product = await products.findOne({ id });

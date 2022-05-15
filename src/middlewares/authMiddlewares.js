@@ -38,7 +38,7 @@ export const validateSignInSchema = (req, res, next) => {
     return res.status(400).send(error.details.map((err) => err.message));
   }
 
-  res.locals.user = user;
+  res.locals.loginInfos = user;
   next();
 };
 
@@ -56,18 +56,18 @@ export const validateIfUserAlreadyExists = async (req, res, next) => {
 
 export const validateToken = async (req, res, next) => {
   const { authorization } = req.headers;
-
-  const token = authorization?.replace("Bearer","").trim();
-
+  const token = authorization?.replace("Bearer", "").trim();
   if (!token) return res.status(401).send({ message: "Token is missing" });
 
   try {
-    const session = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = jwt.verify(token, process.env.JWT_SECRET) || null;
+    if (!email) return res.status(401).send({ message: "Invalid Token" });
 
-    const sessionExists = await db.collection("sessions").findOne({email: session.email});
+    const sessionExists = await db.collection("sessions").findOne({ email });
     if (!sessionExists)
       return res.status(401).send({ message: "Invalid Token" });
 
+    res.locals.user_email = email;
     next();
   } catch {
     res.status(401).send({ message: "Invalid Token" });

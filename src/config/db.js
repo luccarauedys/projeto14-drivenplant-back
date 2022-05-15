@@ -6,7 +6,7 @@ let db = null;
 try {
   const mongoClient = new MongoClient(process.env.MONGO_URI);
   await mongoClient.connect();
-  db = mongoClient.db("drivenPlant");
+  db = mongoClient.db("drivenplant");
 } catch (error) {
   res.status(500).send(error);
 }

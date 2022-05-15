@@ -5,36 +5,27 @@ import db from "./../config/db.js";
 
 export const addCart = async (req, res) => {
   const product = req.body;
-  const { user } = req.headers;
+  const { user_email } = res.locals;
 
   try {
-    const users = db.collection("users");
-    const client = await users.findOne({ email: user });
+    const client = await db.collection("users").findOne({ email: user_email });
+    if (!client) return res.sendStatus(404);
 
-    if (!client) {
-      res.sendStatus(404);
-      return;
-    };
+    await db
+      .collection("users")
+      .updateOne({ _id: client._id }, { $push: { cart: product } });
 
-    await users.updateOne(
-      { _id: client._id }, { $push: { cart: product } }
-    );
-    res.sendStatus(200);
+    res.status(200).send(client.cart);
   } catch (error) {
     res.status(500).send(error);
   }
 };
 
 export const openCart = async (req, res) => {
-  const { user } = req.headers;
-
+  const { user_email } = res.locals;
   try {
-    const users = db.collection("users");
-    const session = jwt.verify(token, process.env.JWT_SECRET);
-    const client = await users.findOne({ email: session.email });
-    const { cart } = client;
-
-    res.status(200).send(cart);
+    const client = await db.collection("users").findOne({ email: user_email });
+    res.status(200).send(client.cart);
   } catch (error) {
     res.status(500).send(error);
   }

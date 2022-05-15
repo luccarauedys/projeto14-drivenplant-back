@@ -24,6 +24,7 @@ export const addCart = async (req, res) => {
 
 export const openCart = async (req, res) => {
   const { email } = res.locals.session;
+  console.log(email);
   try {
     const { cart } = await db.collection("users").findOne({ email });
     if (!cart) return res.sendStatus(404);

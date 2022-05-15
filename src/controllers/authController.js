@@ -32,7 +32,7 @@ export const signIn = async (req, res) => {
       const token = uuid();
       const session = { email, token };
       await db.collection("sessions").insertOne(session);
-      return res.status(200).send({ token });
+      return res.status(200).send({ email, token });
     }
     return user
       ? res.status(401).send("Invalid email or password.")

@@ -3,8 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const addCart = async (req, res) => {
-  const product = req.body;
-  const { email } = res.locals.session;
+  const { product, email } = req.body;
+  // const { email } = res.locals.session;
+
   try {
     await db
       .collection("users")
@@ -18,7 +19,8 @@ export const addCart = async (req, res) => {
 };
 
 export const openCart = async (req, res) => {
-  const { email } = res.locals.session;
+  // const { email } = res.locals.session;
+  const { email } = req.body;
   try {
     const { cart } = await db.collection("users").findOne({ email });
     res.status(200).send(cart);

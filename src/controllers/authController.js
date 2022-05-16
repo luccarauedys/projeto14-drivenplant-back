@@ -36,7 +36,8 @@ export const signIn = async (req, res) => {
 
     if (user && bcrypt.compareSync(password, user.password)) {
       const session = { email, userId: user._id };
-      const token = jwt.sign(session, chaveSecreta);
+      const setting = { expiresIn: 60*60*2} 
+      const token = jwt.sign(session, chaveSecreta, setting);
       return res.status(200).send({ email, token });
     }
 

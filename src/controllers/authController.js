@@ -29,12 +29,14 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
   const { email, password } = res.locals.signin;
+  const chaveSecreta = process.env.JWT_SECRET;
+
   try {
     const user = await db.collection("users").findOne({ email });
 
     if (user && bcrypt.compareSync(password, user.password)) {
       const session = { email, userId: user._id };
-      await db.collection("sessions").insertOne(session);
+      const token = jwt.sign(session, chaveSecreta);
       return res.status(200).send({ email, token });
     }
 
@@ -45,3 +47,4 @@ export const signIn = async (req, res) => {
     res.status(500).send(error);
   }
 };
+

@@ -20,9 +20,11 @@ export const addCart = async (req, res) => {
 
 export const openCart = async (req, res) => {
   // const { email } = res.locals.session;
-  const {email}  = req.body;
+  const {authorization} = req.headers;
+
   try {
-    const { cart } = await db.collection("users").findOne({ email });
+    const {cart} = await db.collection("users").findOne({ email:authorization });
+    console.log(cart);
     res.status(200).send(cart);
   } catch (error) {
     res.status(500).send(error);
